@@ -1,0 +1,10 @@
+name: Alfa Dev OS
+version: 1.0.0
+schema: v1
+
+mcpServers:
+  - name: alfa-dev-os
+    command: node
+    args:
+      - dist/index.js
+    env: {}

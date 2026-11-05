@@ -1,0 +1,18 @@
+[
+  {
+    "path": "src/core/runtimeConfig.ts",
+    "reason": "Centralized runtime environment loader; this is the canonical runtime env reader."
+  },
+  {
+    "path": "src/tools/envScan.ts",
+    "reason": "Contains a human-readable string mentioning process.env; no runtime env read."
+  },
+  {
+    "path": "scripts/report-env-debt.mjs",
+    "reason": "Debt reporting utility that scans for process.env references."
+  },
+  {
+    "path": "scripts/check-env-reads.mjs",
+    "reason": "CI guard utility that scans and enforces env-read policy."
+  }
+]

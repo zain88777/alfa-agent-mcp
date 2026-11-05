@@ -1,0 +1,25 @@
+﻿node_modules/
+dist/
+.env
+.env.*
+!.env.example
+.alfa-agent/
+*.log
+.tmp-*.log
+*.tmp
+*.tgz
+alfa-agent-mcp@*/
+alfatek-app/
+alfaweb/
+CTRL
+Microsoft
+\[AlfaDev\]*
+New Text Document.txt
+coverage/
+.vscode/
+.idea/
+.DS_Store
+hftoken.txt
+tmp-*.json
+tree.txt
+test-debug.js
