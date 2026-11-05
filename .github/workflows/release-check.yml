@@ -58,7 +58,9 @@ jobs:
             echo "- npm: $(npm -v)"
             echo "- Command: npm run release:check"
             echo "- Result: PASS"
-            echo "- Tests: 190/190 (expected)"
+            TESTS_TOTAL=$(grep -m1 -E '(^| )tests +[0-9]+$' artifacts/logs/test.log | grep -oE '[0-9]+$')
+            TESTS_PASS=$(grep -m1 -E '(^| )pass +[0-9]+$' artifacts/logs/test.log | grep -oE '[0-9]+$')
+            echo "- Tests: ${TESTS_PASS:-0}/${TESTS_TOTAL:-0} passed"
             echo "- Build: PASS"
           } > artifacts/release-evidence.md
 

@@ -37,7 +37,7 @@ const COMMAND_MAP: Record<string, { cmd: string; args: string[] }> = {
   npm_build:     { cmd: "npm", args: ["run", "build"] },
   npm_dev:       { cmd: "npm", args: ["run", "dev"] },
   npm_install:   { cmd: "npm", args: ["install"] },
-  npm_test:      { cmd: "npm", args: ["test"] },
+  npm_test:      { cmd: "npm", args: ["run", "test"] },
   git_status:    { cmd: "git", args: ["status"] },
   git_diff:      { cmd: "git", args: ["diff"] },
 };
