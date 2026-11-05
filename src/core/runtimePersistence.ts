@@ -155,7 +155,7 @@ export async function restoreRuntimeState(registry: ToolRegistry): Promise<{ res
     policyTier: r.policyTier as never,
     status: r.status as never,
   }));
-  registry.getApprovalEngine().importSafeRecords(approvals);
+  registry.getApprovalEngine().importSafeRecords(approvals, { triggerChange: false });
   globalTransactionEngine.importSafeSessionSummaries(result.data.data.transactionSummaries as never);
   return { restored: true, quarantined: false };
 }

@@ -7,9 +7,13 @@
  */
 
 import { WebSocketServer, WebSocket } from "ws";
+import { loadRuntimeConfig } from "./runtimeConfig.js";
 
-const BRIDGE_PORT = parseInt(process.env.BRIDGE_PORT ?? "9223", 10);
 const BRIDGE_HOST = "127.0.0.1";
+
+function getBridgePort(): number {
+  return loadRuntimeConfig().bridgePort;
+}
 
 interface BridgeRequest {
   id: string;
@@ -56,10 +60,10 @@ export function startBridgeServer(): void {
     return;
   }
 
-  wss = new WebSocketServer({ port: BRIDGE_PORT, host: BRIDGE_HOST });
+  wss = new WebSocketServer({ port: getBridgePort(), host: BRIDGE_HOST });
 
   wss.on("listening", () => {
-    log(`Bridge server listening on ws://${BRIDGE_HOST}:${BRIDGE_PORT}`);
+    log(`Bridge server listening on ws://${BRIDGE_HOST}:${getBridgePort()}`);
     log("Waiting for Chrome/Edge extension connection...");
   });
 
@@ -145,7 +149,7 @@ export function startBridgeServer(): void {
   wss.on("error", (err) => {
     log(`Server error: ${err.message}`);
     if ((err as NodeJS.ErrnoException).code === "EADDRINUSE") {
-      log(`Port ${BRIDGE_PORT} already in use. Another bridge instance may be running.`);
+      log(`Port ${getBridgePort()} already in use. Another bridge instance may be running.`);
     }
   });
 }
@@ -170,6 +174,6 @@ export function getBridgeStatus(): { running: boolean; extensionConnected: boole
   return {
     running: !!wss,
     extensionConnected: !!extensionSocket,
-    port: BRIDGE_PORT,
+    port: getBridgePort(),
   };
 }

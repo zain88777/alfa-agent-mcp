@@ -10,6 +10,7 @@ const SECRET_PATTERN = /(api[-_]?key|token|authorization|secret|password|credent
 export interface RuntimeConfig {
   provider: ProviderConfig;
   workspaceRoot: string;
+  bridgePort: number;
   debugMode: boolean;
   timeouts: {
     toolMs: number;
@@ -56,6 +57,7 @@ const runtimeSchema = z.object({
     timeoutMs: z.number().int().min(1000).max(300000),
   }),
   workspaceRoot: z.string().min(1),
+  bridgePort: z.number().int().min(1).max(65535),
   debugMode: z.boolean(),
   timeouts: z.object({
     toolMs: z.number().int().min(1000).max(300000),
@@ -114,6 +116,7 @@ const DEFAULTS = {
     recentTraceLimit: 100,
   },
   debugMode: false,
+  bridgePort: 9223,
   screenAgent: {
     enabled: false,
     approvalTimeoutMs: 120000,
@@ -194,7 +197,8 @@ export function loadRuntimeConfig(env: Record<string, string | undefined> = proc
       baseUrl: normalizeBaseUrl(env.LLM_BASE_URL),
       timeoutMs: parseIntEnv(env, "LLM_TIMEOUT_MS") ?? DEFAULTS.provider.timeoutMs,
     },
-    workspaceRoot: path.resolve(env.ALFA_WORKSPACE_ROOT || 'C:\\Users\\SCO\\Desktop\\myprojects'),
+    workspaceRoot: path.resolve(env.ALFA_WORKSPACE_ROOT || process.cwd()),
+    bridgePort: parseIntEnv(env, "BRIDGE_PORT") ?? DEFAULTS.bridgePort,
     debugMode: parseBoolEnv(env, "ALFA_DEBUG") ?? DEFAULTS.debugMode,
     timeouts: {
       toolMs: parseIntEnv(env, "ALFA_TOOL_TIMEOUT_MS") ?? DEFAULTS.timeouts.toolMs,

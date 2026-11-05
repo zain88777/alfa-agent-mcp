@@ -476,13 +476,14 @@ export class ApprovalEngine {
     expiresAt: number;
     reason?: string;
     sessionId?: string;
-  }>): void {
+  }>, options: { triggerChange?: boolean } = {}): void {
+    const { triggerChange = true } = options;
     this.records = records.map((r) => ({
       ...r,
       inputSummary: "{}",
       scopeKey: buildScopeKey(r.requestId, r.parentRequestId),
     }));
     this.expireStale();
-    this.triggerChange();
+    if (triggerChange) this.triggerChange();
   }
 }

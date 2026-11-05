@@ -83,6 +83,25 @@ describe('P4.3 Process Lifecycle Verification', () => {
 
   it('no orphan child process remains', async () => {
     const cliPath = join(process.cwd(), 'dist', 'index.js');
+
+    const countNodeProcesses = (): Promise<number> =>
+      new Promise((resolve) => {
+        const isWindows = process.platform === 'win32';
+        const checkProc = isWindows
+          ? spawn('tasklist', ['/FI', 'IMAGENAME eq node.exe'], { encoding: 'utf8' })
+          : spawn('ps', ['-e', '-o', 'comm'], { encoding: 'utf8' });
+        let output = '';
+        checkProc.stdout.on('data', (d) => { output += d; });
+        checkProc.on('close', () => {
+          const matches = isWindows
+            ? (output.match(/node\.exe/g) || []).length
+            : (output.match(/node/g) || []).length;
+          resolve(matches);
+        });
+      });
+
+    const before = await countNodeProcesses();
+
     const proc = spawn(process.execPath, [cliPath], {
       stdio: ['pipe', 'pipe', 'pipe']
     });
@@ -92,16 +111,11 @@ describe('P4.3 Process Lifecycle Verification', () => {
     proc.kill();
     await new Promise((r) => setTimeout(r, 1000));
 
-    const checkChildren = await new Promise<number>((resolve) => {
-      const checkProc = spawn('tasklist', ['/FI', 'IMAGENAME eq node.exe'], { encoding: 'utf8' });
-      let output = '';
-      checkProc.stdout.on('data', (d) => { output += d; });
-      checkProc.on('close', () => {
-        const matches = (output.match(/node\.exe/g) || []).length;
-        resolve(matches);
-      });
-    });
+    const after = await countNodeProcesses();
 
-    assert.ok(checkChildren <= 20, 'should not leave orphan processes');
+    assert.ok(
+      after <= before,
+      `should not leave orphan processes (before: ${before}, after: ${after})`
+    );
   });
 });
